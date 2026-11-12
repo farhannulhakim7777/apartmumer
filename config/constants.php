@@ -10,9 +10,14 @@ if (!defined('APP_ROOT')) {
 }
 
 // Base URL Configuration
-// Set to empty string if running from root, or '/subfolder' if in subdirectory
-define('BASE_URL', '/apartmumer');
-define('ASSETS_URL', '/apartmumer/assets');
+// Otomatis mendeteksi root domain di Vercel atau subfolder di XAMPP (/apartmumer)
+$docRoot = isset($_SERVER['DOCUMENT_ROOT']) ? str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']) : '';
+$appRoot = str_replace('\\', '/', APP_ROOT);
+$subDir = trim(str_replace($docRoot, '', $appRoot), '/');
+$detectedBase = (!empty($subDir) && strpos($_SERVER['REQUEST_URI'] ?? '', '/' . $subDir) !== false) ? '/' . $subDir : '';
+
+define('BASE_URL', $detectedBase);
+define('ASSETS_URL', $detectedBase . '/assets');
 
 // Asset Paths
 define('CSS_URL', ASSETS_URL . '/css');
